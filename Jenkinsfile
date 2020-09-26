@@ -15,7 +15,7 @@ pipeline {
                 //To iterate and run Jenkins Jobs one by one ####
 
                 for (line in lines) {                                            
-                    build(job: "$line/branchName",
+                    build(job: "$line/$branchName",
                     parameters:
                     [string(name: 'vertical', value: "${params.vert}"),
                     string(name: 'environment', value: "${params.env}"),
