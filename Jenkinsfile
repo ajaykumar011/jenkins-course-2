@@ -1,17 +1,36 @@
 pipeline {
-    agent any
-    tools {
-        maven 'maven-3.0.5'  //global configuration
+    environment {
+        // This registry is important for removing the image after the tests
+        registry = "ajaykumar011/nodeapp"
     }
+    agent any
     stages {
-        stage('Example') {
-            tools {
-                maven 'maven-3.6.3'  //local configuration overriding the global
-            }
+        stage("Test") {
             steps {
-                sh 'mvn --version'  // outlput - maven 3.6.3
+                script {
+                    // Building the Docker image
+                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
+
+                    try {
+                        dockerImage.inside() {
+                            // Extracting the PROJECTDIR environment variable from inside the container
+                            def PROJECTDIR = sh(script: 'echo \$PROJECTDIR', returnStdout: true).trim()
+
+                            // Copying the project into our workspace
+                            sh "cp -r '$PROJECTDIR' '$WORKSPACE'"
+
+                            // Running the tests inside the new directory
+                            dir("$WORKSPACE$PROJECTDIR") {
+                                sh "npm test"
+                            }
+                        }
+
+                    } finally {
+                        // Removing the docker image
+                        sh "docker rmi $registry:$BUILD_NUMBER"
+                    }
+                }
             }
         }
     }
 }
-//	The tool name must be pre-configured in Jenkins under Manage Jenkins → Global Tool Configuration.
