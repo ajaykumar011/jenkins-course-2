@@ -32,17 +32,4 @@ pipeline {
     }
    }
  }
-
-
-// env.WORKSPACE = pwd()
-// def version = readFile "${env.WORKSPACE}/version.txt"
-// //loop in one stage
-// def stepsWithTry(list){
-//     for (int i = 0; i < list.size(); i++) {
-//         try {
-//         sh "curl --connect-timeout 15 -v -L ${list[i]}"
-//         } catch (Exception e) {
-//             echo "Stage failed, but we continue"
-//         }
-//     }
-// }
+}
