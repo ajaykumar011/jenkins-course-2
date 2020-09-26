@@ -1,36 +1,36 @@
 pipeline {
-    environment {
-        // This registry is important for removing the image after the tests
-        registry = "ajaykumar011/nodeapp"
+  environment {
+    registry = "ajaykumar011/jenkins-node1"
+    registryCredential = 'dockerhub'   // create a dockerhub id credentials for login to dockerhub
+    dockerImage = ''
+  }
+  agent any
+  stages {
+    stage('Cloning Git') {
+      steps {
+        git 'https://github.com/gustavoapolinario/microservices-node-example-todo-frontend.git'
+      }
     }
-    agent any
-    stages {
-        stage("Test") {
-            steps {
-                script {
-                    // Building the Docker image
-                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
-
-                    try {
-                        dockerImage.inside() {
-                            // Extracting the PROJECTDIR environment variable from inside the container
-                            def PROJECTDIR = sh(script: 'echo \$PROJECTDIR', returnStdout: true).trim()
-
-                            // Copying the project into our workspace
-                            sh "cp -r '$PROJECTDIR' '$WORKSPACE'"
-
-                            // Running the tests inside the new directory
-                            dir("$WORKSPACE$PROJECTDIR") {
-                                sh "npm test"
-                            }
-                        }
-
-                    } finally {
-                        // Removing the docker image
-                        sh "docker rmi $registry:$BUILD_NUMBER"
-                    }
-                }
-            }
+    stage('Building image') {
+      steps{
+        script {
+          dockerImage = docker.build registry + ":$BUILD_NUMBER"
         }
+      }
     }
+    stage('Deploy Image') {
+      steps{
+        script {
+          docker.withRegistry( '', registryCredential ) {
+            dockerImage.push()
+          }
+        }
+      }
+    }
+    stage('Remove Unused docker image') {
+      steps{
+        sh "docker rmi $registry:$BUILD_NUMBER"
+      }
+    }
+  }
 }
