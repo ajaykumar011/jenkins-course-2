@@ -1,6 +1,6 @@
 pipeline {
   environment {
-    registry = "ajaykumar011/jenkins-node1"
+    registry = "ajaykumar011/jenkins-node1"  //create a repo on hub.docker.com first
     registryCredential = 'dockerhub'   // create a dockerhub id credentials for login to dockerhub
     dockerImage = ''
   }
@@ -8,7 +8,8 @@ pipeline {
   stages {
     stage('Cloning Git') {
       steps {
-        git 'https://github.com/gustavoapolinario/microservices-node-example-todo-frontend.git'
+        git 'https://github.com/ajaykumar011/node-todo-frontend.git'
+        //copy the https git repo .git extension is required.
       }
     }
     stage('Building image') {
@@ -34,3 +35,5 @@ pipeline {
     }
   }
 }
+
+// 
