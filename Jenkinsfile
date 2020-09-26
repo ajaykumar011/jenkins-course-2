@@ -27,7 +27,8 @@ pipeline {
    stage('Jenkins-workspace') {
    steps {
        script {
-           sh "ls -la ${pwd()}"   
+           sh "ls -la ${pwd()}"  
+           tree "${env.WORKSPACE}"
        }
     }
    }
