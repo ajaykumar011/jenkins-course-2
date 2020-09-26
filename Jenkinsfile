@@ -13,13 +13,14 @@ pipeline {
                 def lines = filePath.readLines() 
       
                 //To iterate and run Jenkins Jobs one by one ####
-
-                for (line in lines) {                                            
+                for (line in lines) { 
+                     try {                                           
                     echo "$line"
-                                   
-                   }  
-         }
-                
+                    } catch (Exception e) {
+                     echo "Loop failed, but we continue"
+                }  
+            }
+         sh "ls -la ${pwd()}"       
         }
       }
    }
