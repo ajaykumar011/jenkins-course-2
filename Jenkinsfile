@@ -11,7 +11,7 @@ pipeline {
                 def filePath = readFile "${env.WORKSPACE}/versions.txt"                   
                 //To read file line by line ###
                 def lines = filePath.readLines() 
-      
+                 
                 //To iterate and run Jenkins Jobs one by one ####
                 for (line in lines) { 
                      try {                                           
@@ -20,11 +20,19 @@ pipeline {
                      echo "Loop failed, but we continue"
                 }  
             }
-         sh "ls -la ${pwd()}"       
+             
         }
       }
    }
-}
+   stage('Jenkins-workspace') {
+   steps {
+       script {
+           sh "ls -la ${pwd()}"   
+       }
+    }
+   }
+ }
+
 
 // env.WORKSPACE = pwd()
 // def version = readFile "${env.WORKSPACE}/version.txt"
