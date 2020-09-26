@@ -1,0 +1,18 @@
+pipeline {
+    agent any
+    triggers {
+        cron('H */4 * * 1-5')
+    }
+    stages {
+        stage('Scheduled-stag') {
+            steps {
+                echo 'Execution at Cron time'
+            }
+        }
+    }
+}
+
+// The triggers directive defines the automated ways in which the Pipeline should be re-triggered. 
+// For Pipelines which are integrated with a source such as GitHub or BitBucket, 
+// triggers may not be necessary as webhooks-based integration will likely already be present. 
+// The triggers currently available are cron, pollSCM and upstream.
