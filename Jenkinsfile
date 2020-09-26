@@ -2,7 +2,7 @@ pipeline {
     agent any
     tools {
         maven 'maven-3.0.5'  //global configuration
-        docker 'mydocker'
+        docker 'myDocker'
     }
     stages {
         stage('Example') {
@@ -10,7 +10,7 @@ pipeline {
                 maven 'maven-3.6.3'  //local configuration overriding the global
             }
             steps {
-                sh 'mvn --version'  // outlput - maven 3.6.3
+                sh 'mvn --version'  // output - maven 3.6.3
                 sh 'docker --version'
             }
         }
