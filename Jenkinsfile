@@ -28,7 +28,7 @@ pipeline {
    steps {
        script {
            sh "ls -la ${pwd()}"  
-           tree "${env.WORKSPACE}"
+           sh "tree ${env.WORKSPACE}"
        }
     }
    }
