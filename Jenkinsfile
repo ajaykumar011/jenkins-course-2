@@ -4,25 +4,24 @@ pipeline {
         timeout(time: 1, unit: 'HOURS') 
         timestamps() 
         buildDiscarder(logRotator(numToKeepStr: '5'))
-        //skipDefaultCheckout() skips the default checkout.
+        skipDefaultCheckout() //skips the default checkout.
         //checkoutToSubdirectory('subdirectory') //checkout to a subdirectory
         // preserveStashes()   Preserve stashes from completed builds, for use with stage restarting
         }
+    environment {
+        FULL_PATH_BRANCH = "${sh(script:'git name-rev --name-only HEAD', returnStdout: true)}"
+        GIT_BRANCH = FULL_PATH_BRANCH.substring(FULL_PATH_BRANCH.lastIndexOf('/') + 1, FULL_PATH_BRANCH.length())
+        }
+        
     stages {
-        stage('Example') {
+        stage('Options-check') {
             steps {
                 script{
                     //git branch: 'Your Branch name', credentialsId: 'Your crendiatails', url: ' Your BitBucket Repo URL '
                     git branch: 'master', credentialsId: 'bitbucket-cred', url: 'https://bitbucket.org/jenkins-all-in-one/just-test/'
                     echo 'Pulling... ' + env.GIT_BRANCH
                     sh 'printenv'
-                    def  FILES_LIST = sh (script: "ls   '${workers_dir}'", returnStdout: true).trim()
-                    //DEBUG
-                    echo "FILES_LIST : ${FILES_LIST}"
-                    //PARSING
-                    for(String ele : FILES_LIST.split("\\r?\\n")){ 
-                    println ">>>${ele}<<<"     
-                    }
+                   
                     //sh "ls -la ${pwd()}"  
                     sh "tree ${env.WORKSPACE}"
                 }
