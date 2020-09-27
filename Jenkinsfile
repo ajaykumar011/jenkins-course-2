@@ -1,63 +1,30 @@
+//script example.
 pipeline {
-    parameters {
-        choice(name: 'PLATFORM_FILTER', choices: ['all', 'linux', 'windows', 'mac'], description: 'Run on specific platform')
-    }
-    agent none
+    agent any
     stages {
-        stage('BuildAndTest') {
-            matrix {
-                agent {
-                    label "${PLATFORM}-agent"
-                }
-                when { anyOf {
-                    expression { params.PLATFORM_FILTER == 'all' }
-                    expression { params.PLATFORM_FILTER == env.PLATFORM }
-                } }
-                axes {
-                    axis {
-                        name 'PLATFORM'
-                        values 'linux', 'windows', 'mac'
-                    }
-                    axis {
-                        name 'BROWSER'
-                        values 'firefox', 'chrome', 'safari', 'edge'
-                    }
-                }
-                excludes {
-                    exclude {
-                        axis {
-                            name 'PLATFORM'
-                            values 'linux'
-                        }
-                        axis {
-                            name 'BROWSER'
-                            values 'safari'
-                        }
-                    }
-                    exclude {
-                        axis {
-                            name 'PLATFORM'
-                            notValues 'windows'
-                        }
-                        axis {
-                            name 'BROWSER'
-                            values 'edge'
-                        }
-                    }
-                }
-                stages {
-                    stage('Build') {
-                        steps {
-                            echo "Do Build for ${PLATFORM} - ${BROWSER}"
-                        }
-                    }
-                    stage('Test') {
-                        steps {
-                            echo "Do Test for ${PLATFORM} - ${BROWSER}"
-                        }
+        stage('Example') {
+            steps {
+                echo 'Hello World'
+
+                script {
+                    def browsers = ['chrome', 'firefox']
+                    for (int i = 0; i < browsers.size(); ++i) {
+                        echo "Testing the ${browsers[i]} browser"
                     }
                 }
             }
         }
     }
 }
+
+
+// Example 36. Conditional Statement if, Scripted Pipeline
+// node {
+//     stage('Example') {
+//         if (env.BRANCH_NAME == 'master') {
+//             echo 'I only execute on the master branch'
+//         } else {
+//             echo 'I execute elsewhere'
+//         }
+//     }
+// }
