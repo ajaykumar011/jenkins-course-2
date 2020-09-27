@@ -7,7 +7,7 @@ pipeline {
         //skipDefaultCheckout() skips the default checkout.
         //checkoutToSubdirectory('subdirectory') //checkout to a subdirectory
         // preserveStashes()   Preserve stashes from completed builds, for use with stage restarting
-    }
+        }
     stages {
         stage('Example') {
             steps {
@@ -28,6 +28,7 @@ pipeline {
                 }
             }
         }
+    }
 }
 
 
