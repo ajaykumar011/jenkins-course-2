@@ -1,4 +1,4 @@
-Example 14. Input Step, Declarative Pipeline
+//Example 14. Input Step, Declarative Pipeline
 pipeline {
     agent any
     stages {
