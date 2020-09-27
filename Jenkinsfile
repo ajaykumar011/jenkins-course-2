@@ -1,19 +1,39 @@
-//Example 14. Input Step, Declarative Pipeline
+// Using git without checkout 
 pipeline {
-    agent any
-    stages {
-        stage('Example') {
-            input {
-                message "Should we continue?"
-                ok "Yes, we should."
-                submitter "alice,bob"
-                parameters {
-                    string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
-                }
-            }
-            steps {
-                echo "Hello, ${PERSON}, nice to meet you."
-            }
-        }
+  agent any
+  parameters {
+    gitParameter branchFilter: 'origin/(.*)', defaultValue: 'master', name: 'BRANCH', type: 'PT_BRANCH'
+  }
+  stages {
+    stage('Example') {
+      steps {
+        git branch: "${params.BRANCH}", url: 'https://github.com/jenkinsci/git-parameter-plugin.git'
+      }
     }
+  }
 }
+
+
+// // Using git within checkout - This is working.
+// pipeline {
+//     agent any
+//     parameters {
+//         gitParameter name: 'TAG', 
+//                      type: 'PT_TAG',
+//                      defaultValue: 'master'
+//     }
+//     stages {
+//         stage('Example') {
+//             steps {
+//                 checkout([$class: 'GitSCM', 
+//                           branches: [[name: "${params.TAG}"]], 
+//                           doGenerateSubmoduleConfigurations: false, 
+//                           extensions: [], 
+//                           gitTool: 'Default', 
+//                           submoduleCfg: [], 
+//                           userRemoteConfigs: [[url: 'https://github.com/jenkinsci/git-parameter-plugin.git']]
+//                         ])
+//             }
+//         }
+//     }
+// }
